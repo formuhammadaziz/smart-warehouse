@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0"><i class="bi bi-gear me-2 text-primary"></i>{{ title }}</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Buyurtma raqami*</label>
+              {{ form.order_number }}
+              {% if form.order_number.errors %}<div class="text-danger small">{{ form.order_number.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Mahsulot*</label>
+              {{ form.product }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Miqdor*</label>
+              {{ form.quantity }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Tayinlash</label>
+              {{ form.assigned_to }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Rejalashtirilgan boshlanish</label>
+              {{ form.planned_start }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Rejalashtirilgan tugash</label>
+              {{ form.planned_end }}
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Izoh</label>
+              {{ form.notes }}
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check2 me-2"></i>Buyurtmani saqlash</button>
+            <a href="{% url 'production:order_list' %}" class="btn btn-outline-secondary px-4">Bekor qilish</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

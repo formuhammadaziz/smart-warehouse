@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Foydalanuvchilar{% endblock %}
+{% block page_title %}Foydalanuvchilarni boshqarish{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+  <h4 class="mb-0"><i class="bi bi-people me-2 text-primary"></i>Foydalanuvchilar</h4>
+  <a href="{% url 'accounts:register' %}" class="btn btn-primary">
+    <i class="bi bi-person-plus me-2"></i>Foydalanuvchi qo'shish
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Ism</th>
+            <th>Foydalanuvchi nomi</th>
+            <th>Elektron pochta</th>
+            <th>Lavozim</th>
+            <th>Bo'lim</th>
+            <th>Holat</th>
+            <th>Ro'yxatdan o'tgan</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar-circle-sm">{{ u.username|first|upper }}</div>
+                {{ u.get_full_name|default:u.username }}
+              </div>
+            </td>
+            <td><code>{{ u.username }}</code></td>
+            <td>{{ u.email|default:'—' }}</td>
+            <td>
+              <span class="badge {% if u.role == 'admin' %}bg-danger{% elif u.role == 'warehouse_manager' %}bg-primary{% elif u.role == 'production_manager' %}bg-success{% else %}bg-secondary{% endif %}">
+                {{ u.get_role_display }}
+              </span>
+            </td>
+            <td>{{ u.department|default:'—' }}</td>
+            <td>
+              {% if u.is_active %}<span class="badge bg-success">Faol</span>
+              {% else %}<span class="badge bg-secondary">Nofaol</span>{% endif %}
+            </td>
+            <td class="text-muted small">{{ u.date_joined|date:"M d, Y" }}</td>
+            <td>
+              <div class="d-flex gap-1">
+                <a href="{% url 'accounts:user_edit' u.pk %}" class="btn btn-sm btn-outline-primary" title="Tahrirlash"><i class="bi bi-pencil"></i></a>
+                {% if u != request.user %}
+                <a href="{% url 'accounts:user_delete' u.pk %}" class="btn btn-sm btn-outline-danger" title="O'chirish"><i class="bi bi-trash"></i></a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" class="text-center text-muted py-4">Foydalanuvchilar topilmadi.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

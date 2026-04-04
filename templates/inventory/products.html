@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Mahsulotlar{% endblock %}
+{% block page_title %}Mahsulotlar{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-box-seam me-2 text-primary"></i>Mahsulotlar ombori</h4>
+  <a href="{% url 'inventory:product_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-2"></i>Mahsulot qoshish
+  </a>
+</div>
+
+<!-- Filters -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-3">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Nomi yoki SKU boyicha qidiring...">
+      </div>
+      <div class="col-md-3">
+        <select name="category" class="form-select">
+          <option value="">Barcha kategoriyalar</option>
+          {% for cat in categories %}
+          <option value="{{ cat.pk }}" {% if selected_category == cat.pk|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="status" class="form-select">
+          <option value="">Barcha holat</option>
+          <option value="low" {% if selected_status == 'low' %}selected{% endif %}>Kam zaxira</option>
+          <option value="out" {% if selected_status == 'out' %}selected{% endif %}>Zaxira tugagan</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary flex-grow-1">Filterlash</button>
+          <a href="{% url 'inventory:product_list' %}" class="btn btn-outline-secondary">Tozalash</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Mahsulot nomi</th>
+            <th>SKU</th>
+            <th>Kategoriya</th>
+            <th>Birlik</th>
+            <th>Joriy zaxira</th>
+            <th>Min zaxira</th>
+            <th>Holat</th>
+            <th>Joylashuv</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="fw-semibold">
+              <a href="{% url 'inventory:product_detail' product.pk %}" class="text-decoration-none text-dark">{{ product.product_name }}</a>
+            </td>
+            <td><code class="small">{{ product.sku }}</code></td>
+            <td>{{ product.category.name|default:'—' }}</td>
+            <td>{{ product.get_unit_display }}</td>
+            <td class="fw-bold {% if product.current_stock == 0 %}text-danger{% elif product.is_low_stock %}text-warning{% else %}text-success{% endif %}">
+              {{ product.current_stock }}
+            </td>
+            <td>{{ product.minimum_stock }}</td>
+            <td>
+              {% if product.current_stock == 0 %}
+                <span class="badge bg-danger">Zaxira tugagan</span>
+              {% elif product.is_low_stock %}
+                <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i>Kam zaxira</span>
+              {% else %}
+                <span class="badge bg-success"><i class="bi bi-check me-1"></i>Yaxshi</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ product.default_location|default:'—' }}</td>
+            <td>
+              <div class="d-flex gap-1">
+                <a href="{% url 'inventory:product_detail' product.pk %}" class="btn btn-sm btn-outline-info" title="Korish"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'inventory:product_edit' product.pk %}" class="btn btn-sm btn-outline-primary" title="Tahrirlash"><i class="bi bi-pencil"></i></a>
+                <a href="{% url 'inventory:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger" title="Ochirish"><i class="bi bi-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="10" class="text-center text-muted py-5">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>Mahsulotlar topilmadi.
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer bg-white text-muted small py-2 px-4">
+    {{ products|length }} ta mahsulot topildi
+  </div>
+</div>
+{% endblock %}

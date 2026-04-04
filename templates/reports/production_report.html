@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Ishlab chiqarish hisoboti{% endblock %}
+{% block page_title %}Ishlab chiqarish hisoboti{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-gear me-2 text-warning"></i>Ishlab chiqarish hisoboti</h4>
+  <div class="d-flex gap-2">
+    <a href="{% url 'reports:export_production_csv' %}?days={{ days }}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+    </a>
+    <a href="{% url 'reports:export_production_excel' %}?days={{ days }}" class="btn btn-success btn-sm">
+      <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+    </a>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-3">
+    <form method="get" class="d-flex align-items-center gap-3">
+      <label class="fw-semibold mb-0">Davr:</label>
+      <select name="days" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+        <option value="7" {% if days == 7 %}selected{% endif %}>7 kun</option>
+        <option value="30" {% if days == 30 %}selected{% endif %}>30 kun</option>
+        <option value="90" {% if days == 90 %}selected{% endif %}>90 kun</option>
+        <option value="365" {% if days == 365 %}selected{% endif %}>1 yil</option>
+      </select>
+    </form>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-primary mb-0">{{ orders|length }}</h3>
+      <small class="text-muted">Jami buyurtmalar</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-success mb-0">{{ completed|length }}</h3>
+      <small class="text-muted">Bajarilgan</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-warning mb-0">{{ in_production|length }}</h3>
+      <small class="text-muted">Ishlab chiqarishda</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-danger mb-0">{{ cancelled|length }}</h3>
+      <small class="text-muted">Bekor qilingan</small>
+    </div>
+  </div>
+</div>
+
+<!-- Orders Table -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white border-bottom py-3">
+    <h6 class="mb-0 fw-semibold">Buyurtmalar (soxnggi {{ days }} days)</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr><th>Buyurtma #</th><th>Mahsulot</th><th>Miqdor</th><th>Holat</th><th>Yaratgan</th><th>Boshlanish</th><th>Tugash</th></tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td class="fw-bold"><a href="{% url 'production:order_detail' o.pk %}" class="text-decoration-none">#{{ o.order_number }}</a></td>
+            <td>{{ o.product.product_name }}</td>
+            <td>{{ o.quantity }}</td>
+            <td>
+              <span class="badge {% if o.status == 'completed' %}bg-success{% elif o.status == 'in_production' %}bg-warning text-dark{% elif o.status == 'pending' %}bg-primary{% else %}bg-danger{% endif %}">
+                {{ o.get_status_display }}
+              </span>
+            </td>
+            <td class="small">{{ o.created_by.username|default:'—' }}</td>
+            <td class="small text-muted">{{ o.actual_start|date:"M d, H:i"|default:'—' }}</td>
+            <td class="small text-muted">{{ o.actual_end|date:"M d, H:i"|default:'—' }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-center text-muted py-3">Ushbu davrda buyurtmalar yoq.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Material Usage -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-bottom py-3">
+    <h6 class="mb-0 fw-semibold"><i class="bi bi-layers me-2 text-warning"></i>Ishlab chiqarishdagi material sarfi</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr><th>Material</th><th>Unit</th><th>Jami sarflangan</th></tr>
+        </thead>
+        <tbody>
+          {% for m in material_usage %}
+          <tr>
+            <td class="fw-semibold">{{ m.raw_material__name }}</td>
+            <td>{{ m.raw_material__unit }}</td>
+            <td class="fw-bold text-warning">{{ m.total }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center text-muted py-3">Material sarfi malumotlari yoq.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

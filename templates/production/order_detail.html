@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.order_number }}{% endblock %}
+{% block page_title %}Ishlab chiqarish buyurtmasi #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="row mt-3 g-4">
+  <!-- Order Info -->
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-file-text me-2 text-primary"></i>Buyurtma tafsilotlari</h6>
+        <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'in_production' %}bg-warning text-dark{% elif order.status == 'pending' %}bg-primary{% else %}bg-danger{% endif %} fs-6">
+          {{ order.get_status_display }}
+        </span>
+      </div>
+      <div class="card-body">
+        <table class="table table-borderless table-sm">
+          <tr><td class="text-muted">Buyurtma #</td><td class="fw-bold">#{{ order.order_number }}</td></tr>
+          <tr><td class="text-muted">Mahsulot</td><td class="fw-semibold">{{ order.product.product_name }}</td></tr>
+          <tr><td class="text-muted">Miqdor</td><td>{{ order.quantity }} {{ order.product.get_unit_display }}</td></tr>
+          <tr><td class="text-muted">Tayinlangan</td><td>{{ order.assigned_to.get_full_name|default:order.assigned_to.username|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Yaratgan</td><td>{{ order.created_by.username|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Rejalashtirilgan boshlanish</td><td class="small">{{ order.planned_start|date:"M d, Y H:i"|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Rejalashtirilgan tugash</td><td class="small">{{ order.planned_end|date:"M d, Y H:i"|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Haqiqiy boshlanish</td><td class="small">{{ order.actual_start|date:"M d, Y H:i"|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Haqiqiy tugash</td><td class="small">{{ order.actual_end|date:"M d, Y H:i"|default:'—' }}</td></tr>
+        </table>
+
+        {% if order.notes %}
+        <div class="alert alert-light py-2 small">{{ order.notes }}</div>
+        {% endif %}
+
+        <!-- Progress -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <small class="fw-semibold">Umumiy jarayon</small>
+            <small>{{ order.progress_percent }}%</small>
+          </div>
+          <div class="progress" style="height:10px">
+            <div class="progress-bar {% if order.status == 'completed' %}bg-success{% else %}bg-primary{% endif %}" style="width:{{ order.progress_percent }}%"></div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2 flex-wrap">
+          {% if order.status == 'pending' %}
+          <a href="{% url 'production:order_start' order.pk %}" class="btn btn-success btn-sm">
+            <i class="bi bi-play-fill me-1"></i>Start Production
+          </a>
+          <a href="{% url 'production:order_edit' order.pk %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i>Edit
+          </a>
+          <form method="post" action="{% url 'production:order_cancel' order.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Buyurtmani bekor qilasizmi?')">
+              <i class="bi bi-x me-1"></i>Cancel
+            </button>
+          </form>
+          {% elif order.status == 'in_production' %}
+          <form method="post" action="{% url 'production:order_cancel' order.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Davom etayotgan buyurtmani bekor qilasizmi?')">
+              <i class="bi bi-x me-1"></i>Cancel
+            </button>
+          </form>
+          {% endif %}
+          <a href="{% url 'production:order_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Back
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Material Check -->
+    {% if material_check %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-layers me-2 text-warning"></i>Material mavjudligi</h6>
+      </div>
+      <div class="card-body p-0">
+        {% for mc in material_check %}
+        <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+          <div>
+            <div class="fw-semibold small">{{ mc.material.name }}</div>
+            <div class="text-muted" style="font-size:0.75rem">Kerak: {{ mc.needed }} | Mavjud: {{ mc.available }}</div>
+          </div>
+          {% if mc.sufficient %}
+            <i class="bi bi-check-circle-fill text-success fs-5"></i>
+          {% else %}
+            <i class="bi bi-x-circle-fill text-danger fs-5"></i>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Ishlab chiqarish bosqichlari -->
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-diagram-2 me-2 text-success"></i>Ishlab chiqarish bosqichlari</h6>
+      </div>
+      <div class="card-body p-4">
+        <div class="stages-timeline">
+          {% for stage in stages %}
+          <div class="stage-item d-flex gap-3 mb-4">
+            <!-- Stage icon -->
+            <div class="stage-icon-wrap d-flex flex-column align-items-center">
+              <div class="stage-circle {% if stage.status == 'completed' %}bg-success{% elif stage.status == 'in_progress' %}bg-warning{% elif stage.status == 'skipped' %}bg-secondary{% else %}bg-light border{% endif %}">
+                {% if stage.status == 'completed' %}
+                  <i class="bi bi-check-lg text-white"></i>
+                {% elif stage.status == 'in_progress' %}
+                  <i class="bi bi-arrow-clockwise text-white"></i>
+                {% elif stage.status == 'skipped' %}
+                  <i class="bi bi-dash text-white"></i>
+                {% else %}
+                  <i class="bi bi-clock text-muted"></i>
+                {% endif %}
+              </div>
+              {% if not forloop.last %}<div class="stage-line"></div>{% endif %}
+            </div>
+            <!-- Stage content -->
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <div>
+                  <h6 class="mb-0 fw-semibold">{{ stage.get_stage_name_display }}</h6>
+                  <small class="text-muted">
+                    <span class="badge {% if stage.status == 'completed' %}bg-success{% elif stage.status == 'in_progress' %}bg-warning text-dark{% elif stage.status == 'skipped' %}bg-secondary{% else %}bg-light text-muted border{% endif %}">
+                      {{ stage.get_status_display }}
+                    </span>
+                    {% if stage.performed_by %} · {{ stage.performed_by.username }}{% endif %}
+                    {% if stage.completed_at %} · Bajarilgan {{ stage.completed_at|date:"M d, H:i" }}{% endif %}
+                  </small>
+                </div>
+                {% if order.status == 'in_production' and stage.status != 'completed' %}
+                <a href="{% url 'production:stage_update' order.pk stage.pk %}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-pencil me-1"></i>Update
+                </a>
+                {% endif %}
+              </div>
+              {% if stage.notes %}
+              <div class="alert alert-light py-1 px-2 small mt-2">{{ stage.notes }}</div>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-muted text-center py-4">Hozircha bosqichlar yaratilmagan. Bosqichlarni yaratish uchun ishlab chiqarishni boshlang.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

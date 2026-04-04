@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Profil{% endblock %}
+{% block page_title %}Mening profilim{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4 text-center">
+        <div class="avatar-circle-lg mx-auto mb-3">{{ profile_user.username|first|upper }}</div>
+        <h4>{{ profile_user.get_full_name|default:profile_user.username }}</h4>
+        <span class="badge {% if profile_user.role == 'admin' %}bg-danger{% elif profile_user.role == 'warehouse_manager' %}bg-primary{% elif profile_user.role == 'production_manager' %}bg-success{% else %}bg-secondary{% endif %} mb-3">
+          {{ profile_user.get_role_display }}
+        </span>
+        <table class="table table-borderless text-start">
+          <tr><td class="fw-semibold text-muted">Foydalanuvchi nomi</td><td>{{ profile_user.username }}</td></tr>
+          <tr><td class="fw-semibold text-muted">Elektron pochta</td><td>{{ profile_user.email|default:'—' }}</td></tr>
+          <tr><td class="fw-semibold text-muted">Telefon</td><td>{{ profile_user.phone|default:'—' }}</td></tr>
+          <tr><td class="fw-semibold text-muted">Bo'lim</td><td>{{ profile_user.department|default:'—' }}</td></tr>
+          <tr><td class="fw-semibold text-muted">Ro'yxatdan o'tgan</td><td>{{ profile_user.date_joined|date:"F d, Y" }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Materiallar spetsifikatsiyasi{% endblock %}
+{% block page_title %}Materiallar spetsifikatsiyasi{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+  <h4 class="mb-0"><i class="bi bi-diagram-3 me-2 text-primary"></i>Materiallar spetsifikatsiyasi</h4>
+  <a href="{% url 'inventory:bom_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-2"></i>BOM yozuvi qoshish
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr><th>#</th><th>Mahsulot</th><th>Xom ashyo</th><th>Kerakli miqdor</th><th>Unit</th><th>Izoh</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for item in bom_items %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <a href="{% url 'inventory:product_detail' item.product.pk %}" class="text-decoration-none fw-semibold">{{ item.product.product_name }}</a>
+              <div class="text-muted small">{{ item.product.sku }}</div>
+            </td>
+            <td class="fw-semibold">{{ item.raw_material.name }}</td>
+            <td class="fw-bold text-primary">{{ item.quantity_required }}</td>
+            <td>{{ item.raw_material.get_unit_display }}</td>
+            <td class="small text-muted">{{ item.notes|default:'—' }}</td>
+            <td>
+              <form method="post" action="{% url 'inventory:bom_delete' item.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ushbu BOM yozuvini ochirasizmi?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-center text-muted py-5">
+            <i class="bi bi-diagram-3 fs-1 d-block mb-2"></i>BOM yozuvlari yoq. Har bir mahsulot uchun kerakli materiallarni qoshing.
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

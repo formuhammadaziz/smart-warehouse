@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Mahsulotni ochirish{% endblock %}
+{% block page_title %}Mahsulotni ochirish{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-danger text-white"><h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Ochirishni tasdiqlang</h5></div>
+      <div class="card-body p-4 text-center">
+        <p class="mb-1">Mahsulotni ochirish <strong>{{ product.product_name }}</strong>?</p>
+        <p class="text-danger small mb-4">Bu barcha boglik operatsiyalarni ham ochiradi.</p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger me-2">Ha, ochirish</button>
+          <a href="{% url 'inventory:product_list' %}" class="btn btn-outline-secondary">Bekor qilish</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

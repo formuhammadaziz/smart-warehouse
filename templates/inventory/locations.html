@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Ombor joylashuvi{% endblock %}
+{% block page_title %}Ombor joylashuvi{% endblock %}
+
+{% block content %}
+<div class="row mt-3 g-4">
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0"><i class="bi bi-geo-alt me-2 text-primary"></i>Joylashuv qoshish</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nomi*</label>
+            {{ form.name }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Kodi*</label>
+            {{ form.code }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Tavsif</label>
+            {{ form.description }}
+          </div>
+          <div class="mb-3">
+            <div class="form-check">{{ form.is_active }}<label class="form-check-label ms-2">Faol</label></div>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="bi bi-plus me-2"></i>Joylashuv yaratish</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0"><i class="bi bi-list me-2"></i>Barcha joylar</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+              <tr><th>Name</th><th>Kodi</th><th>Holat</th><th>Amallar</th></tr>
+            </thead>
+            <tbody>
+              {% for loc in locations %}
+              <tr>
+                <td class="fw-semibold">{{ loc.name }}</td>
+                <td><code>{{ loc.code }}</code></td>
+                <td>{% if loc.is_active %}<span class="badge bg-success">Faol</span>{% else %}<span class="badge bg-secondary">Nofaol</span>{% endif %}</td>
+                <td>
+                  <form method="post" action="{% url 'inventory:location_delete' loc.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ushbu joyni ochirasizmi?')"><i class="bi bi-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted py-4">Hozircha joylar yoq.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

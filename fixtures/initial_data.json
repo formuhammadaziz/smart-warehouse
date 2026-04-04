@@ -1,0 +1,126 @@
+[
+  {
+    "model": "inventory.category",
+    "pk": 1,
+    "fields": {"name": "Electronics", "description": "Electronic components and devices", "created_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.category",
+    "pk": 2,
+    "fields": {"name": "Raw Metals", "description": "Metal sheets, rods and components", "created_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.category",
+    "pk": 3,
+    "fields": {"name": "Packaging", "description": "Boxes, wraps and packaging material", "created_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.category",
+    "pk": 4,
+    "fields": {"name": "Chemicals", "description": "Chemical compounds and solvents", "created_at": "2024-01-01T00:00:00Z"}
+  },
+
+  {
+    "model": "inventory.warehouselocation",
+    "pk": 1,
+    "fields": {"name": "Main Warehouse", "code": "WH-A1", "description": "Primary storage area", "is_active": true, "created_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.warehouselocation",
+    "pk": 2,
+    "fields": {"name": "Cold Storage", "code": "WH-B1", "description": "Temperature controlled storage", "is_active": true, "created_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.warehouselocation",
+    "pk": 3,
+    "fields": {"name": "Production Floor", "code": "PF-01", "description": "Active production area", "is_active": true, "created_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.warehouselocation",
+    "pk": 4,
+    "fields": {"name": "Shipping Bay", "code": "SH-01", "description": "Outbound goods area", "is_active": true, "created_at": "2024-01-01T00:00:00Z"}
+  },
+
+  {
+    "model": "inventory.product",
+    "pk": 1,
+    "fields": {"product_name": "Industrial Motor A200", "sku": "MOT-A200", "category": 1, "unit": "pcs", "minimum_stock": "10.00", "current_stock": "45.00", "default_location": 1, "description": "High-performance industrial motor 200W", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.product",
+    "pk": 2,
+    "fields": {"product_name": "Control Panel Unit", "sku": "CPU-001", "category": 1, "unit": "pcs", "minimum_stock": "5.00", "current_stock": "8.00", "default_location": 1, "description": "Main control panel assembly", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.product",
+    "pk": 3,
+    "fields": {"product_name": "Aluminum Frame 50x50", "sku": "ALF-5050", "category": 2, "unit": "m", "minimum_stock": "100.00", "current_stock": "75.00", "default_location": 2, "description": "Aluminum extrusion 50x50mm", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.product",
+    "pk": 4,
+    "fields": {"product_name": "Cardboard Box Large", "sku": "BOX-LG-01", "category": 3, "unit": "box", "minimum_stock": "200.00", "current_stock": "350.00", "default_location": 4, "description": "Large shipping cardboard box 60x40x30cm", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.product",
+    "pk": 5,
+    "fields": {"product_name": "Smart Controller v2", "sku": "SCT-V2", "category": 1, "unit": "pcs", "minimum_stock": "20.00", "current_stock": "4.00", "default_location": 1, "description": "Programmable smart controller", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+
+  {
+    "model": "inventory.rawmaterial",
+    "pk": 1,
+    "fields": {"name": "Copper Wire 2mm", "code": "CW-002", "unit": "kg", "current_stock": "500.00", "minimum_stock": "50.00", "location": 1, "description": "Electrical grade copper wire", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.rawmaterial",
+    "pk": 2,
+    "fields": {"name": "Steel Sheet 1mm", "code": "SS-001", "unit": "kg", "current_stock": "1200.00", "minimum_stock": "200.00", "location": 2, "description": "Cold-rolled steel sheet 1mm thickness", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.rawmaterial",
+    "pk": 3,
+    "fields": {"name": "Circuit Board PCB", "code": "PCB-001", "unit": "pcs", "current_stock": "300.00", "minimum_stock": "30.00", "location": 1, "description": "Blank PCB board 10x10cm", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.rawmaterial",
+    "pk": 4,
+    "fields": {"name": "Industrial Paint Red", "code": "PT-RED", "unit": "l", "current_stock": "80.00", "minimum_stock": "20.00", "location": 2, "description": "High-temperature resistant red paint", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+  {
+    "model": "inventory.rawmaterial",
+    "pk": 5,
+    "fields": {"name": "Aluminum Ingot", "code": "AI-001", "unit": "kg", "current_stock": "15.00", "minimum_stock": "100.00", "location": 1, "description": "Pure aluminum ingot for casting", "created_at": "2024-01-01T00:00:00Z", "updated_at": "2024-01-01T00:00:00Z"}
+  },
+
+  {
+    "model": "inventory.billofmaterials",
+    "pk": 1,
+    "fields": {"product": 1, "raw_material": 1, "quantity_required": "2.5000", "notes": ""}
+  },
+  {
+    "model": "inventory.billofmaterials",
+    "pk": 2,
+    "fields": {"product": 1, "raw_material": 2, "quantity_required": "5.0000", "notes": "For motor casing"}
+  },
+  {
+    "model": "inventory.billofmaterials",
+    "pk": 3,
+    "fields": {"product": 2, "raw_material": 3, "quantity_required": "1.0000", "notes": ""}
+  },
+  {
+    "model": "inventory.billofmaterials",
+    "pk": 4,
+    "fields": {"product": 2, "raw_material": 1, "quantity_required": "0.5000", "notes": ""}
+  },
+  {
+    "model": "inventory.billofmaterials",
+    "pk": 5,
+    "fields": {"product": 5, "raw_material": 3, "quantity_required": "2.0000", "notes": ""}
+  },
+  {
+    "model": "inventory.billofmaterials",
+    "pk": 6,
+    "fields": {"product": 5, "raw_material": 1, "quantity_required": "1.2000", "notes": ""}
+  }
+]

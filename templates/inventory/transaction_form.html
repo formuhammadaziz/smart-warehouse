@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-3">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0"><i class="bi bi-arrow-left-right me-2 text-primary"></i>{{ title }}</h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-info py-2 small">
+          <i class="bi bi-info-circle me-2"></i>Mahsulot yoki xom ashyodan birini tanlang, ikkalasini emas.
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Mahsulot</label>
+              {{ form.product }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Xom ashyo</label>
+              {{ form.raw_material }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Operatsiya turi*</label>
+              {{ form.transaction_type }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Miqdor*</label>
+              {{ form.quantity }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Ombor joylashuvi</label>
+              {{ form.warehouse_location }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Manzil (otkazish uchun)</label>
+              {{ form.destination_location }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Havola (Hisob-faktura/Buyurtma)</label>
+              {{ form.reference }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Sana va vaqt*</label>
+              {{ form.date }}
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Izoh</label>
+              {{ form.notes }}
+            </div>
+          </div>
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger mt-3">{{ form.non_field_errors }}</div>
+          {% endif %}
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check2 me-2"></i>Operatsiyani saqlash</button>
+            <a href="{% url 'inventory:transaction_list' %}" class="btn btn-outline-secondary px-4">Bekor qilish</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

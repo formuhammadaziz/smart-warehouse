@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Foydalanuvchini o'chirish{% endblock %}
+{% block page_title %}Foydalanuvchini o'chirish{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-lg-5">
+    <div class="card border-danger border-0 shadow-sm">
+      <div class="card-header bg-danger text-white"><h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>O'chirishni tasdiqlang</h5></div>
+      <div class="card-body p-4 text-center">
+        <p class="mb-4"><strong>{{ edit_user.username }}</strong> foydalanuvchisini o'chirishni xohlaysizmi?</p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger me-2">Ha, o'chirish</button>
+          <a href="{% url 'accounts:users' %}" class="btn btn-outline-secondary">Bekor qilish</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Ishlab chiqarish buyurtmalari{% endblock %}
+{% block page_title %}Ishlab chiqarish buyurtmalari{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-gear me-2 text-primary"></i>Ishlab chiqarish buyurtmalari</h4>
+  <a href="{% url 'production:order_create' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-2"></i>Yangi buyurtma
+  </a>
+</div>
+
+<!-- Status Filter Tabs -->
+<ul class="nav nav-pills mb-4">
+  <li class="nav-item">
+    <a class="nav-link {% if not selected_status %}active{% endif %}" href="{% url 'production:order_list' %}">Barchasi</a>
+  </li>
+  {% for value, label in status_choices %}
+  <li class="nav-item">
+    <a class="nav-link {% if selected_status == value %}active{% endif %}" href="?status={{ value }}">{{ label }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Buyurtma #</th>
+            <th>Mahsulot</th>
+            <th>Miqdor</th>
+            <th>Holat</th>
+            <th>Jarayon</th>
+            <th>Tayinlangan</th>
+            <th>Rejalashtirilgan boshlanish</th>
+            <th>Yaratilgan</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td>
+              <a href="{% url 'production:order_detail' order.pk %}" class="fw-bold text-decoration-none">
+                #{{ order.order_number }}
+              </a>
+            </td>
+            <td>
+              <div class="fw-semibold">{{ order.product.product_name }}</div>
+              <div class="text-muted small">{{ order.product.sku }}</div>
+            </td>
+            <td>{{ order.quantity }} {{ order.product.get_unit_display }}</td>
+            <td>
+              <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'in_production' %}bg-warning text-dark{% elif order.status == 'pending' %}bg-primary{% else %}bg-danger{% endif %}">
+                {{ order.get_status_display }}
+              </span>
+            </td>
+            <td style="min-width:120px">
+              <div class="d-flex align-items-center gap-2">
+                <div class="progress flex-grow-1" style="height:8px">
+                  <div class="progress-bar {% if order.status == 'completed' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% else %}bg-primary{% endif %}"
+                       style="width:{{ order.progress_percent }}%"></div>
+                </div>
+                <small class="text-muted">{{ order.progress_percent }}%</small>
+              </div>
+            </td>
+            <td class="small">{{ order.assigned_to.get_full_name|default:order.assigned_to.username|default:'—' }}</td>
+            <td class="small text-muted">{{ order.planned_start|date:"M d, Y"|default:'—' }}</td>
+            <td class="small text-muted">{{ order.created_at|date:"M d, Y" }}</td>
+            <td>
+              <div class="d-flex gap-1">
+                <a href="{% url 'production:order_detail' order.pk %}" class="btn btn-sm btn-outline-info" title="View"><i class="bi bi-eye"></i></a>
+                {% if order.status == 'pending' %}
+                <a href="{% url 'production:order_edit' order.pk %}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                <form method="post" action="{% url 'production:order_cancel' order.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Buyurtmani bekor qilasizmi?')" title="Cancel"><i class="bi bi-x-circle"></i></button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" class="text-center text-muted py-5">
+            <i class="bi bi-gear fs-1 d-block mb-2"></i>Ishlab chiqarish buyurtmalari topilmadi.
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

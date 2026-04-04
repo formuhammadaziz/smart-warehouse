@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}Ombor hisoboti{% endblock %}
+{% block page_title %}Ombor hisoboti{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-box-seam me-2 text-primary"></i>Ombor hisoboti</h4>
+  <div class="d-flex gap-2">
+    <a href="{% url 'reports:export_inventory_csv' %}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+    </a>
+    <a href="{% url 'reports:export_inventory_excel' %}" class="btn btn-success btn-sm">
+      <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+    </a>
+  </div>
+</div>
+
+<!-- Date Filter -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-3">
+    <form method="get" class="d-flex align-items-center gap-3">
+      <label class="fw-semibold mb-0">Korinish:</label>
+      <select name="days" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+        <option value="7" {% if days == 7 %}selected{% endif %}>7 kun</option>
+        <option value="30" {% if days == 30 %}selected{% endif %}>30 kun</option>
+        <option value="90" {% if days == 90 %}selected{% endif %}>90 kun</option>
+        <option value="365" {% if days == 365 %}selected{% endif %}>1 yil</option>
+      </select>
+    </form>
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-primary mb-0">{{ products|length }}</h3>
+      <small class="text-muted">Jami mahsulotlar</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-danger mb-0">{{ low_stock|length }}</h3>
+      <small class="text-muted">Kam zaxiradagi elementlar</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-success mb-0">{{ total_in }}</h3>
+      <small class="text-muted">Jami kirim ({{ days }} days)</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center py-3">
+      <h3 class="fw-bold text-warning mb-0">{{ total_out }}</h3>
+      <small class="text-muted">Jami chiqim ({{ days }} days)</small>
+    </div>
+  </div>
+</div>
+
+<!-- Products Table -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white border-bottom py-3">
+    <h6 class="mb-0 fw-semibold">Zaxira darajalari</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Mahsulot</th>
+            <th>SKU</th>
+            <th>Kategoriya</th>
+            <th>Birlik</th>
+            <th>Joriy zaxira</th>
+            <th>Min zaxira</th>
+            <th>Holat</th>
+            <th>Joylashuv</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr class="{% if p.current_stock == 0 %}table-danger{% elif p.is_low_stock %}table-warning{% endif %}">
+            <td class="fw-semibold">{{ p.product_name }}</td>
+            <td><code class="small">{{ p.sku }}</code></td>
+            <td>{{ p.category.name|default:'—' }}</td>
+            <td>{{ p.get_unit_display }}</td>
+            <td class="fw-bold">{{ p.current_stock }}</td>
+            <td>{{ p.minimum_stock }}</td>
+            <td>
+              {% if p.current_stock == 0 %}<span class="badge bg-danger">Out of Stock</span>
+              {% elif p.is_low_stock %}<span class="badge bg-warning text-dark">Low Stock</span>
+              {% else %}<span class="badge bg-success">OK</span>{% endif %}
+            </td>
+            <td class="small text-muted">{{ p.default_location|default:'—' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Transactions -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-bottom py-3">
+    <h6 class="mb-0 fw-semibold">Soxnggi operatsiyalar (soxnggi {{ days }} days)</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr><th>Type</th><th>Mahsulot</th><th>Miqdor</th><th>Joylashuv</th><th>Bajaruvchi</th><th>Sana</th></tr>
+        </thead>
+        <tbody>
+          {% for tx in transactions %}
+          <tr>
+            <td><span class="badge {% if tx.transaction_type == 'IN' %}bg-success{% elif tx.transaction_type == 'OUT' %}bg-danger{% else %}bg-secondary{% endif %}">{{ tx.get_transaction_type_display }}</span></td>
+            <td>{{ tx.product.product_name }}</td>
+            <td>{{ tx.quantity }}</td>
+            <td class="small">{{ tx.warehouse_location|default:'—' }}</td>
+            <td class="small">{{ tx.performed_by.username|default:'—' }}</td>
+            <td class="small text-muted">{{ tx.date|date:"M d, Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center text-muted py-3">Ushbu davrda operatsiyalar yoq.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

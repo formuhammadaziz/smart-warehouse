@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.product_name }}{% endblock %}
+{% block page_title %}Mahsulot tafsilotlari{% endblock %}
+
+{% block content %}
+<div class="row mt-3 g-4">
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-box-seam me-2 text-primary"></i>Mahsulot malumotlari</h6>
+      </div>
+      <div class="card-body">
+        <h5 class="fw-bold mb-1">{{ product.product_name }}</h5>
+        <p class="text-muted small mb-3">SKU: <code>{{ product.sku }}</code></p>
+
+        <div class="mb-3">
+          {% if product.current_stock == 0 %}
+            <span class="badge bg-danger fs-6">Out of Stock</span>
+          {% elif product.is_low_stock %}
+            <span class="badge bg-warning text-dark fs-6"><i class="bi bi-exclamation-triangle me-1"></i>Low Stock</span>
+          {% else %}
+            <span class="badge bg-success fs-6"><i class="bi bi-check me-1"></i>Zaxirada bor</span>
+          {% endif %}
+        </div>
+
+        <table class="table table-borderless table-sm">
+          <tr><td class="text-muted">Kategoriya</td><td class="fw-semibold">{{ product.category.name|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Birlik</td><td class="fw-semibold">{{ product.get_unit_display }}</td></tr>
+          <tr><td class="text-muted">Joriy zaxira</td><td class="fw-bold {% if product.is_low_stock %}text-danger{% else %}text-success{% endif %}">{{ product.current_stock }}</td></tr>
+          <tr><td class="text-muted">Min zaxira</td><td>{{ product.minimum_stock }}</td></tr>
+          <tr><td class="text-muted">Joylashuv</td><td>{{ product.default_location|default:'—' }}</td></tr>
+          <tr><td class="text-muted">Yaratilgan</td><td class="small">{{ product.created_at|date:"M d, Y" }}</td></tr>
+        </table>
+
+        {% if product.description %}
+        <p class="text-muted small">{{ product.description }}</p>
+        {% endif %}
+
+        <div class="d-flex gap-2">
+          <a href="{% url 'inventory:product_edit' product.pk %}" class="btn btn-primary btn-sm"><i class="bi bi-pencil me-1"></i>Tahrirlash</a>
+          <a href="{% url 'inventory:transaction_create' %}" class="btn btn-outline-success btn-sm"><i class="bi bi-plus me-1"></i>Zaxira qoshish</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOM -->
+    {% if bom_items %}
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-diagram-3 me-2 text-warning"></i>Materiallar spetsifikatsiyasi</h6>
+        <a href="{% url 'inventory:bom_create' %}" class="btn btn-sm btn-outline-warning">+ Add</a>
+      </div>
+      <div class="card-body p-0">
+        {% for item in bom_items %}
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+          <div>
+            <div class="fw-semibold small">{{ item.raw_material.name }}</div>
+            <div class="text-muted" style="font-size:0.75rem">{{ item.raw_material.code }}</div>
+          </div>
+          <span class="badge bg-light text-dark">{{ item.quantity_required }} {{ item.raw_material.get_unit_display }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Transaction History -->
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-clock-history me-2 text-info"></i>Zaxira tarixi</h6>
+        <a href="{% url 'inventory:transaction_create' %}" class="btn btn-sm btn-outline-primary">+ Yangi operatsiya</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Tur</th>
+                <th>Miqdor</th>
+                <th>Location</th>
+                <th>Havola</th>
+                <th>Bajaruvchi</th>
+                <th>Sana</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for tx in transactions %}
+              <tr>
+                <td>
+                  <span class="badge {% if tx.transaction_type == 'IN' %}bg-success{% elif tx.transaction_type == 'OUT' %}bg-danger{% elif tx.transaction_type == 'PRODUCTION' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                    {{ tx.transaction_type }}
+                  </span>
+                </td>
+                <td class="fw-semibold">{{ tx.quantity }}</td>
+                <td class="small">{{ tx.warehouse_location|default:'—' }}</td>
+                <td class="small text-muted">{{ tx.reference|default:'—' }}</td>
+                <td class="small">{{ tx.performed_by.username|default:'—' }}</td>
+                <td class="small text-muted">{{ tx.date|date:"M d, Y H:i" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" class="text-center text-muted py-4">Hozircha operatsiyalar yoq.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

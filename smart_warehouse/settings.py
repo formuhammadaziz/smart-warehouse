@@ -1,13 +1,18 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-smart-warehouse-secret-key-change-in-production-2024'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-smart-warehouse-secret-key-change-in-production-2024')
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -58,23 +63,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'smart_warehouse.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+    )
 }
-
-# PostgreSQL config (uncomment and configure for production)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'smart_warehouse',
-#         'USER': 'postgres',
-#         'PASSWORD': 'password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

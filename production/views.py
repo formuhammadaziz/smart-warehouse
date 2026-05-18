@@ -42,11 +42,11 @@ def _deduct_materials(order):
             if not Notification.objects.filter(
                 notification_type='low_stock',
                 is_read=False,
-                message__startswith=f'Low stock: {material.name} ',
+                message__startswith=f'Kam qoldiq: {material.name} ',
             ).exists():
                 Notification.objects.create(
                     notification_type='low_stock',
-                    message=f'Low stock: {material.name} has {material.current_stock} {material.unit} after production deduction.',
+                    message=f'Kam qoldiq: {material.name} ishlab chiqarishdan so\'ng {material.current_stock} {material.unit} qoldi.',
                 )
 
 
@@ -71,9 +71,9 @@ def order_create(request):
         order.created_by = request.user
         order.save()
         _create_stages(order)
-        messages.success(request, f'Production order #{order.order_number} created.')
+        messages.success(request, f'Ishlab chiqarish buyurtmasi #{order.order_number} yaratildi.')
         return redirect('production:order_detail', pk=order.pk)
-    return render(request, 'production/order_form.html', {'form': form, 'title': 'New Production Order'})
+    return render(request, 'production/order_form.html', {'form': form, 'title': 'Yangi ishlab chiqarish buyurtmasi'})
 
 
 @login_required
@@ -108,25 +108,25 @@ def order_edit(request, pk):
     form = ProductionOrderForm(request.POST or None, instance=order)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Production order updated.')
+        messages.success(request, 'Ishlab chiqarish buyurtmasi yangilandi.')
         return redirect('production:order_detail', pk=order.pk)
-    return render(request, 'production/order_form.html', {'form': form, 'title': 'Edit Order', 'order': order})
+    return render(request, 'production/order_form.html', {'form': form, 'title': 'Buyurtmani tahrirlash', 'order': order})
 
 
 @login_required
 def order_start(request, pk):
     order = get_object_or_404(ProductionOrder, pk=pk)
     if order.status != 'pending':
-        messages.error(request, 'Order cannot be started.')
+        messages.error(request, 'Buyurtmani boshlash mumkin emas.')
         return redirect('production:order_detail', pk=pk)
 
     with db_transaction.atomic():
         can_start, missing = order.can_start()
         if not can_start:
-            messages.error(request, f'Insufficient materials: {missing}. Cannot start production.')
+            messages.error(request, f'Material yetarli emas: {missing}. Ishlab chiqarishni boshlash mumkin emas.')
             Notification.objects.create(
                 notification_type='insufficient_materials',
-                message=f'Cannot start order #{order.order_number}: insufficient material "{missing}".',
+                message=f'#{order.order_number} buyurtmasini boshlab bo\'lmaydi: "{missing}" material yetarli emas.',
             )
             return redirect('production:order_detail', pk=pk)
 
@@ -140,7 +140,7 @@ def order_start(request, pk):
             first_stage.started_at = timezone.now()
             first_stage.save()
 
-    messages.success(request, f'Production order #{order.order_number} started. Materials deducted.')
+    messages.success(request, f'Ishlab chiqarish buyurtmasi #{order.order_number} boshlandi. Materiallar yechib olindi.')
     return redirect('production:order_detail', pk=pk)
 
 
@@ -151,9 +151,9 @@ def order_cancel(request, pk):
         if order.status in ('pending', 'in_production'):
             order.status = 'cancelled'
             order.save()
-            messages.success(request, 'Order cancelled.')
+            messages.success(request, 'Buyurtma bekor qilindi.')
         else:
-            messages.error(request, 'Cannot cancel this order.')
+            messages.error(request, "Bu buyurtmani bekor qilib bo'lmaydi.")
     return redirect('production:order_list')
 
 
@@ -185,11 +185,11 @@ def stage_update(request, order_pk, stage_pk):
                 order.save()
                 Notification.objects.create(
                     notification_type='production_complete',
-                    message=f'Production order #{order.order_number} completed. {order.quantity} {order.product.unit} added to stock.',
+                    message=f'Ishlab chiqarish buyurtmasi #{order.order_number} yakunlandi. {order.quantity} {order.product.unit} omborga qo\'shildi.',
                 )
-                messages.success(request, f'Order #{order.order_number} fully completed!')
+                messages.success(request, f'#{order.order_number} buyurtmasi to\'liq yakunlandi!')
         updated_stage.save()
-        messages.success(request, f'Stage "{stage.get_stage_name_display()}" updated.')
+        messages.success(request, f'"{stage.get_stage_name_display()}" bosqichi yangilandi.')
         return redirect('production:order_detail', pk=order_pk)
 
     return render(request, 'production/stage_update.html', {

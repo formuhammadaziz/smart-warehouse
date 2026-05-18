@@ -23,7 +23,7 @@ def login_view(request):
             next_url = request.GET.get('next', 'dashboard:index')
             return redirect(next_url)
         else:
-            messages.error(request, 'Invalid username or password.')
+            messages.error(request, "Noto'g'ri foydalanuvchi nomi yoki parol.")
 
     return render(request, 'accounts/login.html', {'form': form})
 
@@ -40,7 +40,7 @@ def register_view(request):
     form = RegisterForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         user = form.save()
-        messages.success(request, f'User {user.username} created successfully.')
+        messages.success(request, f'Foydalanuvchi {user.username} muvaffaqiyatli yaratildi.')
         return redirect('accounts:users')
     return render(request, 'accounts/register.html', {'form': form})
 
@@ -59,7 +59,7 @@ def user_edit(request, pk):
     form = UserEditForm(request.POST or None, instance=user)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'User updated successfully.')
+        messages.success(request, "Foydalanuvchi muvaffaqiyatli yangilandi.")
         return redirect('accounts:users')
     return render(request, 'accounts/user_edit.html', {'form': form, 'edit_user': user})
 
@@ -70,10 +70,10 @@ def user_delete(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if request.method == 'POST':
         if user == request.user:
-            messages.error(request, "You cannot delete your own account.")
+            messages.error(request, "O'z hisobingizni o'chira olmaysiz.")
         else:
             user.delete()
-            messages.success(request, 'User deleted successfully.')
+            messages.success(request, "Foydalanuvchi muvaffaqiyatli o'chirildi.")
         return redirect('accounts:users')
     return render(request, 'accounts/user_confirm_delete.html', {'edit_user': user})
 

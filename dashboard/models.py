@@ -4,10 +4,10 @@ from django.utils import timezone
 
 class Notification(models.Model):
     NOTIFICATION_TYPES = [
-        ('low_stock', 'Low Stock Alert'),
-        ('production_complete', 'Production Completed'),
-        ('insufficient_materials', 'Insufficient Materials'),
-        ('general', 'General'),
+        ('low_stock', 'Kam qoldiq ogohlantirishi'),
+        ('production_complete', 'Ishlab chiqarish yakunlandi'),
+        ('insufficient_materials', 'Material yetarli emas'),
+        ('general', 'Umumiy'),
     ]
 
     notification_type = models.CharField(max_length=30, choices=NOTIFICATION_TYPES, default='general')

@@ -41,9 +41,9 @@ def product_create(request):
     form = ProductForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         product = form.save()
-        messages.success(request, f'Product "{product.product_name}" created.')
+        messages.success(request, f'"{product.product_name}" mahsuloti yaratildi.')
         return redirect('inventory:product_list')
-    return render(request, 'inventory/product_form.html', {'form': form, 'title': 'Add Product'})
+    return render(request, 'inventory/product_form.html', {'form': form, 'title': "Mahsulot qo'shish"})
 
 
 @login_required
@@ -52,9 +52,9 @@ def product_edit(request, pk):
     form = ProductForm(request.POST or None, instance=product)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Product updated.')
+        messages.success(request, 'Mahsulot yangilandi.')
         return redirect('inventory:product_list')
-    return render(request, 'inventory/product_form.html', {'form': form, 'title': 'Edit Product', 'product': product})
+    return render(request, 'inventory/product_form.html', {'form': form, 'title': 'Mahsulotni tahrirlash', 'product': product})
 
 
 @login_required
@@ -74,7 +74,7 @@ def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         product.delete()
-        messages.success(request, 'Product deleted.')
+        messages.success(request, "Mahsulot o'chirildi.")
         return redirect('inventory:product_list')
     return render(request, 'inventory/product_confirm_delete.html', {'product': product})
 
@@ -114,9 +114,9 @@ def transaction_create(request):
         tx.performed_by = request.user
         tx.save()
         _apply_transaction(tx)
-        messages.success(request, 'Transaction recorded successfully.')
+        messages.success(request, 'Operatsiya muvaffaqiyatli saqlandi.')
         return redirect('inventory:transaction_list')
-    return render(request, 'inventory/transaction_form.html', {'form': form, 'title': 'New Transaction'})
+    return render(request, 'inventory/transaction_form.html', {'form': form, 'title': 'Yangi operatsiya'})
 
 
 def _apply_transaction(tx):
@@ -135,11 +135,11 @@ def _apply_transaction(tx):
             if not Notification.objects.filter(
                 notification_type='low_stock',
                 is_read=False,
-                message__startswith=f'Low stock alert: {p.product_name} (',
+                message__startswith=f'Kam qoldiq: {p.product_name} (',
             ).exists():
                 Notification.objects.create(
                     notification_type='low_stock',
-                    message=f'Low stock alert: {p.product_name} ({p.current_stock} {p.unit} remaining)',
+                    message=f'Kam qoldiq: {p.product_name} ({p.current_stock} {p.unit} qoldi)',
                 )
     elif tx.raw_material:
         m = tx.raw_material
@@ -154,11 +154,11 @@ def _apply_transaction(tx):
             if not Notification.objects.filter(
                 notification_type='low_stock',
                 is_read=False,
-                message__startswith=f'Low stock alert: {m.name} (',
+                message__startswith=f'Kam qoldiq: {m.name} (',
             ).exists():
                 Notification.objects.create(
                     notification_type='low_stock',
-                    message=f'Low stock alert: {m.name} ({m.current_stock} {m.unit} remaining)',
+                    message=f'Kam qoldiq: {m.name} ({m.current_stock} {m.unit} qoldi)',
                 )
 
 
@@ -170,7 +170,7 @@ def category_list(request):
     form = CategoryForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Category created.')
+        messages.success(request, 'Kategoriya yaratildi.')
         return redirect('inventory:category_list')
     return render(request, 'inventory/categories.html', {'categories': categories, 'form': form})
 
@@ -180,7 +180,7 @@ def category_delete(request, pk):
     cat = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
         cat.delete()
-        messages.success(request, 'Category deleted.')
+        messages.success(request, "Kategoriya o'chirildi.")
     return redirect('inventory:category_list')
 
 
@@ -192,7 +192,7 @@ def location_list(request):
     form = WarehouseLocationForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Location created.')
+        messages.success(request, 'Joylashuv yaratildi.')
         return redirect('inventory:location_list')
     return render(request, 'inventory/locations.html', {'locations': locations, 'form': form})
 
@@ -202,7 +202,7 @@ def location_delete(request, pk):
     loc = get_object_or_404(WarehouseLocation, pk=pk)
     if request.method == 'POST':
         loc.delete()
-        messages.success(request, 'Location deleted.')
+        messages.success(request, "Joylashuv o'chirildi.")
     return redirect('inventory:location_list')
 
 
@@ -222,9 +222,9 @@ def raw_material_create(request):
     form = RawMaterialForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Raw material created.')
+        messages.success(request, 'Xom ashyo yaratildi.')
         return redirect('inventory:raw_material_list')
-    return render(request, 'inventory/raw_material_form.html', {'form': form, 'title': 'Add Raw Material'})
+    return render(request, 'inventory/raw_material_form.html', {'form': form, 'title': "Xom ashyo qo'shish"})
 
 
 @login_required
@@ -233,9 +233,9 @@ def raw_material_edit(request, pk):
     form = RawMaterialForm(request.POST or None, instance=material)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'Raw material updated.')
+        messages.success(request, 'Xom ashyo yangilandi.')
         return redirect('inventory:raw_material_list')
-    return render(request, 'inventory/raw_material_form.html', {'form': form, 'title': 'Edit Raw Material', 'material': material})
+    return render(request, 'inventory/raw_material_form.html', {'form': form, 'title': 'Xom ashyoni tahrirlash', 'material': material})
 
 
 @login_required
@@ -243,7 +243,7 @@ def raw_material_delete(request, pk):
     material = get_object_or_404(RawMaterial, pk=pk)
     if request.method == 'POST':
         material.delete()
-        messages.success(request, 'Raw material deleted.')
+        messages.success(request, "Xom ashyo o'chirildi.")
         return redirect('inventory:raw_material_list')
     return render(request, 'inventory/raw_material_confirm_delete.html', {'material': material})
 
@@ -261,9 +261,9 @@ def bom_create(request):
     form = BOMForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         form.save()
-        messages.success(request, 'BOM entry created.')
+        messages.success(request, 'Spetsifikatsiya yozuvi yaratildi.')
         return redirect('inventory:bom_list')
-    return render(request, 'inventory/bom_form.html', {'form': form, 'title': 'Add BOM Entry'})
+    return render(request, 'inventory/bom_form.html', {'form': form, 'title': "Spetsifikatsiya qo'shish"})
 
 
 @login_required
@@ -271,5 +271,5 @@ def bom_delete(request, pk):
     bom = get_object_or_404(BillOfMaterials, pk=pk)
     if request.method == 'POST':
         bom.delete()
-        messages.success(request, 'BOM entry deleted.')
+        messages.success(request, "Spetsifikatsiya yozuvi o'chirildi.")
     return redirect('inventory:bom_list')

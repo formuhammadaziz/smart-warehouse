@@ -32,16 +32,16 @@ class WarehouseLocation(models.Model):
 
 class Product(models.Model):
     UNIT_CHOICES = [
-        ('pcs', 'Pieces'),
-        ('kg', 'Kilograms'),
-        ('g', 'Grams'),
-        ('l', 'Liters'),
-        ('ml', 'Milliliters'),
-        ('m', 'Meters'),
-        ('m2', 'Square Meters'),
-        ('m3', 'Cubic Meters'),
-        ('box', 'Box'),
-        ('pack', 'Pack'),
+        ('pcs', 'Dona'),
+        ('kg', 'Kilogramm'),
+        ('g', 'Gramm'),
+        ('l', 'Litr'),
+        ('ml', 'Millilitr'),
+        ('m', 'Metr'),
+        ('m2', 'Kv. metr'),
+        ('m3', 'Kub metr'),
+        ('box', 'Quti'),
+        ('pack', 'Paket'),
     ]
 
     product_name = models.CharField(max_length=200)
@@ -115,11 +115,11 @@ class BillOfMaterials(models.Model):
 
 class InventoryTransaction(models.Model):
     TRANSACTION_TYPES = [
-        ('IN', 'Stock In'),
-        ('OUT', 'Stock Out'),
-        ('TRANSFER', 'Transfer'),
-        ('ADJUSTMENT', 'Adjustment'),
-        ('PRODUCTION', 'Production Consumption'),
+        ('IN', 'Kirim'),
+        ('OUT', 'Chiqim'),
+        ('TRANSFER', "Ko'chirish"),
+        ('ADJUSTMENT', 'Tuzatish'),
+        ('PRODUCTION', 'Ishlab chiqarishga sarflash'),
     ]
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)

@@ -71,12 +71,12 @@
             <td class="small text-muted">{{ order.created_at|date:"M d, Y" }}</td>
             <td>
               <div class="d-flex gap-1">
-                <a href="{% url 'production:order_detail' order.pk %}" class="btn btn-sm btn-outline-info" title="View"><i class="bi bi-eye"></i></a>
+                <a href="{% url 'production:order_detail' order.pk %}" class="btn btn-sm btn-outline-info" title="Ko'rish"><i class="bi bi-eye"></i></a>
                 {% if order.status == 'pending' %}
-                <a href="{% url 'production:order_edit' order.pk %}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                <a href="{% url 'production:order_edit' order.pk %}" class="btn btn-sm btn-outline-primary" title="Tahrirlash"><i class="bi bi-pencil"></i></a>
                 <form method="post" action="{% url 'production:order_cancel' order.pk %}" class="d-inline">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Buyurtmani bekor qilasizmi?')" title="Cancel"><i class="bi bi-x-circle"></i></button>
+                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Buyurtmani bekor qilasizmi?')" title="Bekor qilish"><i class="bi bi-x-circle"></i></button>
                 </form>
                 {% endif %}
               </div>

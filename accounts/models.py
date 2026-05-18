@@ -4,10 +4,10 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('warehouse_manager', 'Warehouse Manager'),
-        ('production_manager', 'Production Manager'),
-        ('worker', 'Worker'),
+        ('admin', 'Administrator'),
+        ('warehouse_manager', 'Ombor boshqaruvchisi'),
+        ('production_manager', 'Ishlab chiqarish boshqaruvchisi'),
+        ('worker', 'Ishchi'),
     ]
 
     role = models.CharField(max_length=30, choices=ROLE_CHOICES, default='worker')

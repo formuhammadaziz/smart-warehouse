@@ -20,7 +20,7 @@
         <button type="submit" class="btn btn-primary w-100">Qidirish</button>
       </div>
       <div class="col-md-2">
-        <a href="{% url 'inventory:raw_material_list' %}" class="btn btn-outline-secondary w-100">Clear</a>
+        <a href="{% url 'inventory:raw_material_list' %}" class="btn btn-outline-secondary w-100">Tozalash</a>
       </div>
     </form>
   </div>
@@ -35,12 +35,12 @@
             <th>#</th>
             <th>Nomi</th>
             <th>Kodi</th>
-            <th>Unit</th>
-            <th>Current Stock</th>
-            <th>Min Stock</th>
-            <th>Status</th>
-            <th>Location</th>
-            <th>Actions</th>
+            <th>O'lchov birligi</th>
+            <th>Joriy qoldiq</th>
+            <th>Min. qoldiq</th>
+            <th>Holat</th>
+            <th>Joylashuv</th>
+            <th>Amallar</th>
           </tr>
         </thead>
         <tbody>
@@ -66,8 +66,8 @@
             <td class="small text-muted">{{ material.location|default:'—' }}</td>
             <td>
               <div class="d-flex gap-1">
-                <a href="{% url 'inventory:raw_material_edit' material.pk %}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                <a href="{% url 'inventory:raw_material_delete' material.pk %}" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                <a href="{% url 'inventory:raw_material_edit' material.pk %}" class="btn btn-sm btn-outline-primary" title="Tahrirlash"><i class="bi bi-pencil"></i></a>
+                <a href="{% url 'inventory:raw_material_delete' material.pk %}" class="btn btn-sm btn-outline-danger" title="O'chirish"><i class="bi bi-trash"></i></a>
               </div>
             </td>
           </tr>

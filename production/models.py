@@ -6,10 +6,10 @@ from inventory.models import Product, RawMaterial, InventoryTransaction
 
 class ProductionOrder(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('in_production', 'In Production'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
+        ('pending', 'Kutilmoqda'),
+        ('in_production', 'Ishlab chiqarishda'),
+        ('completed', 'Yakunlangan'),
+        ('cancelled', 'Bekor qilingan'),
     ]
 
     order_number = models.CharField(max_length=50, unique=True)
@@ -66,17 +66,17 @@ class ProductionOrder(models.Model):
 
 class ProductionStage(models.Model):
     STAGE_CHOICES = [
-        ('preparation', 'Preparation'),
-        ('manufacturing', 'Manufacturing'),
-        ('quality_check', 'Quality Check'),
-        ('packaging', 'Packaging'),
-        ('finished', 'Finished'),
+        ('preparation', 'Tayyorgarlik'),
+        ('manufacturing', 'Ishlab chiqarish'),
+        ('quality_check', 'Sifat nazorati'),
+        ('packaging', 'Qadoqlash'),
+        ('finished', 'Tayyor'),
     ]
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('in_progress', 'In Progress'),
-        ('completed', 'Completed'),
-        ('skipped', 'Skipped'),
+        ('pending', 'Kutilmoqda'),
+        ('in_progress', 'Jarayonda'),
+        ('completed', 'Yakunlangan'),
+        ('skipped', "O'tkazib yuborilgan"),
     ]
 
     order = models.ForeignKey(ProductionOrder, on_delete=models.CASCADE, related_name='stages')

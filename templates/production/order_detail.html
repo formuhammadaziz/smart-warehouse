@@ -45,27 +45,27 @@
         <div class="d-flex gap-2 flex-wrap">
           {% if order.status == 'pending' %}
           <a href="{% url 'production:order_start' order.pk %}" class="btn btn-success btn-sm">
-            <i class="bi bi-play-fill me-1"></i>Start Production
+            <i class="bi bi-play-fill me-1"></i>Ishlab chiqarishni boshlash
           </a>
           <a href="{% url 'production:order_edit' order.pk %}" class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-pencil me-1"></i>Edit
+            <i class="bi bi-pencil me-1"></i>Tahrirlash
           </a>
           <form method="post" action="{% url 'production:order_cancel' order.pk %}" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Buyurtmani bekor qilasizmi?')">
-              <i class="bi bi-x me-1"></i>Cancel
+              <i class="bi bi-x me-1"></i>Bekor qilish
             </button>
           </form>
           {% elif order.status == 'in_production' %}
           <form method="post" action="{% url 'production:order_cancel' order.pk %}" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Davom etayotgan buyurtmani bekor qilasizmi?')">
-              <i class="bi bi-x me-1"></i>Cancel
+              <i class="bi bi-x me-1"></i>Bekor qilish
             </button>
           </form>
           {% endif %}
           <a href="{% url 'production:order_list' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i>Back
+            <i class="bi bi-arrow-left me-1"></i>Orqaga
           </a>
         </div>
       </div>
@@ -136,7 +136,7 @@
                 </div>
                 {% if order.status == 'in_production' and stage.status != 'completed' %}
                 <a href="{% url 'production:stage_update' order.pk stage.pk %}" class="btn btn-sm btn-outline-primary">
-                  <i class="bi bi-pencil me-1"></i>Update
+                  <i class="bi bi-pencil me-1"></i>Yangilash
                 </a>
                 {% endif %}
               </div>

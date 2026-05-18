@@ -144,7 +144,7 @@
                 <i class="bi bi-{% if notif.notification_type == 'low_stock' %}exclamation-triangle text-warning{% elif notif.notification_type == 'production_complete' %}check-circle text-success{% else %}info-circle text-info{% endif %} mt-1"></i>
                 <div>
                   <div class="small">{{ notif.message|truncatechars:80 }}</div>
-                  <div class="text-muted" style="font-size:0.7rem">{{ notif.created_at|timesince }} ago</div>
+                  <div class="text-muted" style="font-size:0.7rem">{{ notif.created_at|timesince }} oldin</div>
                 </div>
               </a>
             </li>

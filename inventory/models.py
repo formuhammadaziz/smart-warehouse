@@ -45,7 +45,7 @@ class Product(models.Model):
     ]
 
     product_name = models.CharField(max_length=200)
-    sku = models.CharField(max_length=50, unique=True, verbose_name='SKU')
+    sku = models.CharField(max_length=50, unique=True, verbose_name='MXIK')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='pcs')
     minimum_stock = models.DecimalField(max_digits=12, decimal_places=2, default=0)

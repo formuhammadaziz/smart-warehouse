@@ -7,10 +7,10 @@
   <h4 class="mb-0"><i class="bi bi-box-seam me-2 text-primary"></i>Ombor hisoboti</h4>
   <div class="d-flex gap-2">
     <a href="{% url 'reports:export_inventory_csv' %}" class="btn btn-outline-success btn-sm">
-      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+      <i class="bi bi-filetype-csv me-1"></i>CSV yuklab olish
     </a>
     <a href="{% url 'reports:export_inventory_excel' %}" class="btn btn-success btn-sm">
-      <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+      <i class="bi bi-file-earmark-excel me-1"></i>Excel yuklab olish
     </a>
   </div>
 </div>
@@ -47,13 +47,13 @@
   <div class="col-md-3">
     <div class="card border-0 shadow-sm text-center py-3">
       <h3 class="fw-bold text-success mb-0">{{ total_in }}</h3>
-      <small class="text-muted">Jami kirim ({{ days }} days)</small>
+      <small class="text-muted">Jami kirim ({{ days }} kun)</small>
     </div>
   </div>
   <div class="col-md-3">
     <div class="card border-0 shadow-sm text-center py-3">
       <h3 class="fw-bold text-warning mb-0">{{ total_out }}</h3>
-      <small class="text-muted">Jami chiqim ({{ days }} days)</small>
+      <small class="text-muted">Jami chiqim ({{ days }} kun)</small>
     </div>
   </div>
 </div>
@@ -69,7 +69,7 @@
         <thead class="table-light">
           <tr>
             <th>Mahsulot</th>
-            <th>SKU</th>
+            <th>MXIK</th>
             <th>Kategoriya</th>
             <th>Birlik</th>
             <th>Joriy zaxira</th>
@@ -88,9 +88,9 @@
             <td class="fw-bold">{{ p.current_stock }}</td>
             <td>{{ p.minimum_stock }}</td>
             <td>
-              {% if p.current_stock == 0 %}<span class="badge bg-danger">Out of Stock</span>
-              {% elif p.is_low_stock %}<span class="badge bg-warning text-dark">Low Stock</span>
-              {% else %}<span class="badge bg-success">OK</span>{% endif %}
+              {% if p.current_stock == 0 %}<span class="badge bg-danger">Zaxira tugagan</span>
+              {% elif p.is_low_stock %}<span class="badge bg-warning text-dark">Kam zaxira</span>
+              {% else %}<span class="badge bg-success">Yaxshi</span>{% endif %}
             </td>
             <td class="small text-muted">{{ p.default_location|default:'—' }}</td>
           </tr>
@@ -104,13 +104,13 @@
 <!-- Transactions -->
 <div class="card border-0 shadow-sm">
   <div class="card-header bg-white border-bottom py-3">
-    <h6 class="mb-0 fw-semibold">Soxnggi operatsiyalar (soxnggi {{ days }} days)</h6>
+    <h6 class="mb-0 fw-semibold">So'nggi operatsiyalar (so'nggi {{ days }} kun)</h6>
   </div>
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
-          <tr><th>Type</th><th>Mahsulot</th><th>Miqdor</th><th>Joylashuv</th><th>Bajaruvchi</th><th>Sana</th></tr>
+          <tr><th>Turi</th><th>Mahsulot</th><th>Miqdor</th><th>Joylashuv</th><th>Bajaruvchi</th><th>Sana</th></tr>
         </thead>
         <tbody>
           {% for tx in transactions %}

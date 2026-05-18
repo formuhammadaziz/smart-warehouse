@@ -88,9 +88,9 @@ class StockTransactionForm(forms.ModelForm):
         raw_material = cleaned.get('raw_material')
         quantity = cleaned.get('quantity')
         if not product and not raw_material:
-            raise forms.ValidationError('Select either a product or a raw material.')
+            raise forms.ValidationError('Mahsulot yoki xom ashyodan birini tanlang.')
         if product and raw_material:
-            raise forms.ValidationError('Select only one: product or raw material.')
+            raise forms.ValidationError('Faqat bittasini tanlang: mahsulot yoki xom ashyo.')
         if quantity is not None and quantity <= 0:
-            raise forms.ValidationError('Quantity must be greater than 0.')
+            raise forms.ValidationError('Miqdor 0 dan katta bo\'lishi kerak.')
         return cleaned

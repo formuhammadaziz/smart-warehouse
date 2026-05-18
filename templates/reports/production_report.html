@@ -7,10 +7,10 @@
   <h4 class="mb-0"><i class="bi bi-gear me-2 text-warning"></i>Ishlab chiqarish hisoboti</h4>
   <div class="d-flex gap-2">
     <a href="{% url 'reports:export_production_csv' %}?days={{ days }}" class="btn btn-outline-success btn-sm">
-      <i class="bi bi-filetype-csv me-1"></i>Export CSV
+      <i class="bi bi-filetype-csv me-1"></i>CSV yuklab olish
     </a>
     <a href="{% url 'reports:export_production_excel' %}?days={{ days }}" class="btn btn-success btn-sm">
-      <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+      <i class="bi bi-file-earmark-excel me-1"></i>Excel yuklab olish
     </a>
   </div>
 </div>
@@ -60,7 +60,7 @@
 <!-- Orders Table -->
 <div class="card border-0 shadow-sm mb-4">
   <div class="card-header bg-white border-bottom py-3">
-    <h6 class="mb-0 fw-semibold">Buyurtmalar (soxnggi {{ days }} days)</h6>
+    <h6 class="mb-0 fw-semibold">Buyurtmalar (so'nggi {{ days }} kun)</h6>
   </div>
   <div class="card-body p-0">
     <div class="table-responsive">
@@ -101,7 +101,7 @@
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
-          <tr><th>Material</th><th>Unit</th><th>Jami sarflangan</th></tr>
+          <tr><th>Material</th><th>Birlik</th><th>Jami sarflangan</th></tr>
         </thead>
         <tbody>
           {% for m in material_usage %}

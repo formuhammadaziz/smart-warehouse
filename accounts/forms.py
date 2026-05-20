@@ -59,3 +59,13 @@ class UserEditForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'department': forms.TextInput(attrs={'class': 'form-control'}),
         }
+        labels = {
+            'username': 'Foydalanuvchi nomi',
+            'first_name': 'Ism',
+            'last_name': 'Familiya',
+            'email': 'Elektron pochta',
+            'role': 'Rol',
+            'phone': 'Telefon',
+            'department': "Bo'lim",
+            'is_active': 'Faol',
+        }

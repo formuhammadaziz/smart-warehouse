@@ -10,9 +10,9 @@ class CustomUser(AbstractUser):
         ('worker', 'Ishchi'),
     ]
 
-    role = models.CharField(max_length=30, choices=ROLE_CHOICES, default='worker')
-    phone = models.CharField(max_length=20, blank=True)
-    department = models.CharField(max_length=100, blank=True)
+    role = models.CharField(max_length=30, choices=ROLE_CHOICES, default='worker', verbose_name='Rol')
+    phone = models.CharField(max_length=20, blank=True, verbose_name='Telefon')
+    department = models.CharField(max_length=100, blank=True, verbose_name="Bo'lim")
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
